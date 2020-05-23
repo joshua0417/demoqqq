@@ -1,0 +1,79 @@
+<% layout('/layouts/default.html', {title: '模板管理', libs:
+['validate','fileupload','dataGrid','ueditor']}){%>
+
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header with-border">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('模板管理')}
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool"
+					data-widget="collapse">
+					<i class="fa fa-minus"></i>
+				</button>
+			</div>
+		</div>
+		<#form:form id="inputForm" model="${template}" class="form-horizontal">
+			
+			<div class="box-body">
+
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label class="control-label col-sm-1" title=""> <span
+								class="required ">*</span> ${text('文件名')}：<i
+								class="fa icon-question hide"></i></label>
+							<div class="col-sm-11">
+
+								<#form:input path="file.name" maxlength="255"
+									class="form-control measure-input required" />
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="col-sm-12">
+								<#form:textarea path="fileSource" rows="100"
+									style="height:600px;" encodeHtml="true" maxlength="990000"
+									class="form-control" />
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="box-footer">
+				<div class="row">
+					<div class="col-sm-offset-2 col-sm-10">
+						<% if (hasPermi('cms:template:edit')){ %>
+						<button type="submit" class="btn btn-sm btn-primary"
+							id="btnSubmit" onclick="saveFile()">
+							<i class="fa fa-check"></i> ${text('保 存')}
+						</button>
+						&nbsp; <% } %>
+						<button type="button" class="btn btn-sm btn-default"
+							id="btnCancel" onclick="js.closeCurrentTabPage()">
+							<i class="fa fa-reply-all"></i> ${text('关 闭')}
+						</button>
+					</div>
+				</div>
+			</div>
+		</#form:form>
+	</div>
+</div>
+<% } %>
+<script>
+	function saveFile() {
+		js.ajaxSubmit("${ctx}/cms/template/saveFileTemplate", {filePath: "${template.fileName}",fileName:$("#file_name").val(),fileSource:$("#fileSource").val()}, function(data) {
+			if(data.result=='1'){
+				window.self.parent.loadTree();
+			}
+			js.showMessage(data.message);
+		});
+	}
+</script>
